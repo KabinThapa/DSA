@@ -15,6 +15,8 @@ class LinearQueue{
             front = -1;
             rear = -1;
         }
+        ~LinearQueue(){delete[] LQ;}
+        
         void enqueue(int item){
             if(rear == size-1){
                 cout<<"Queue overflowed!\n";

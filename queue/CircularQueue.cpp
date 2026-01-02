@@ -13,6 +13,8 @@ public:
         rear = -1;
         CQ = new int[size];
     }
+    
+    ~CircularQueue(){delete[] CQ;}
 
     bool isFull() {
         return (rear + 1) % size == front;
