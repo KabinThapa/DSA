@@ -1,56 +1,77 @@
-#include<iostream>
-#include<stack>
-#include<string>
-#include<cmath>
+#include <iostream>
+#include <stack>
+#include <string>
+#include <cmath> 
+#include <algorithm> 
 
 using namespace std;
 
-int main(){
+int performOperation(int op1, int op2, char oper) {
+    switch (oper) {
+        case '+': return op1 + op2;
+        case '-': return op1 - op2;
+        case '*': return op1 * op2;
+        case '/': 
+            if(op2 == 0) return 0; 
+            return op1 / op2;
+        case '^': return pow(op1, op2);
+        default: return 0;
+    }
+}
+
+void evaluatePrefix() {
+    string exp;
+    cout << "Enter prefix expression (e.g., +1*23): ";
+    cin >> exp;
+
     stack<int> st;
-    string expression;
-    int operatorCount{0}, operandCount{0};
-    int result;
 
-    cout<<"Enter a postfix expression for evaluation:";
-    cin>>expression;
+    for (int i = exp.length() - 1; i >= 0; i--) {
+        char ch = exp[i];
 
-    for(int i =0;i<expression.length();i++){
-        char ch = expression[i];
-        if(isdigit(ch)){
-            operandCount++;
+        if (isdigit(ch)) {
             st.push(ch - '0');
-        }
-        else{
-            if(st.size() < 2 ){
-                cout<<"Invalid Expression!\n";
+        } 
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^') {
+            if (st.size() < 2) {
+                cout << "Error: Invalid expression!" << endl;
+                return;
             }
-            else{
-                int operand1 = st.top();
-                st.pop();
-                int operand2 = st.top();
-                st.pop();
+            
+            int op1 = st.top(); st.pop();
+            int op2 = st.top(); st.pop();
 
-                switch (ch)
-                {
-                case '+':
-                    result = operand2 + operand1;break;
-                case '-': result = operand2 - operand1;break;
-                case '*' : result = operand2 * operand1;break;
-                case '/' : result = operand2 / operand1;break;
-                case '^' : result = pow(operand2,operand1);
-                default: cout<<"Invalid operator encountered!\n";return 0;
-                }
-                st.push(result);
-            }
+            int result = performOperation(op1, op2, ch);
+            st.push(result);
         }
     }
-    if(!st.empty()){
-        cout<<"Result:"<<st.top()<<endl;
-        st.pop();
+
+    if (st.size() == 1) {
+        cout << "Final Result: " << st.top() << endl;
+    } else {
+        cout << "Error: Invalid expression structure." << endl;
     }
-    else{
-        cout<<"No expression has been evaluated!\n";
+}
+
+int main() {
+    int choice;
+    while (true) {
+        cout << "\n--- PREFIX CALCULATOR ---\n";
+        cout << "1. Evaluate Expression\n";
+        cout << "2. Exit\n";
+        cout << "Choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                evaluatePrefix();
+                break;
+            case 2:
+                cout << "Exiting..." << endl;
+                return 0;
+            default:
+                cout << "Invalid choice!" << endl;
+        }
     }
     return 0;
 }
-
